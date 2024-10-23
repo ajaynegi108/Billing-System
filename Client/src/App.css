@@ -1,0 +1,11 @@
+.gjs-cv-canvas {
+    top: 0 !important;
+    width: 100% !important;
+    height: 700px !important;
+}
+
+.gjs-editor,
+.gjs-editor-cont {
+    overflow-y: auto !important;
+    height: 700px !important;
+}
