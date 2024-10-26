@@ -8,6 +8,7 @@ const SignupForm = () => {
     phone: "",
     fullname: "",
     password: "",
+    role: 1000,
   });
 
   const [errors, setErrors] = useState({});
@@ -46,7 +47,7 @@ const SignupForm = () => {
     try {
       console.log(formData);
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "https://invoice-backend-ocfk.onrender.com/api/auth/register",
         formData
       );
       setSuccessMessage(
@@ -58,6 +59,7 @@ const SignupForm = () => {
         email: "",
         phone: "",
         password: "",
+        role: 1000,
       }); // Reset form
     } catch (error) {
       console.error("Error signing up:", error);

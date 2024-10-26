@@ -8,13 +8,34 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SKEY);
 const routes = require("./routes");
 const app = express();
-
+const con = require("./config/db");
 // Middleware
+con();
 app.use(express.json());
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:5173", // Frontend development URL
+  "https://your-frontend-production-url.com", // Production frontend URL
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allows cookies to be sent
+  })
+);
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://invoice-backend-ocfk.onrender.com",
+    ], // Replace with your frontend URL
     credentials: true, // Allows sending cookies with requests
   })
 );

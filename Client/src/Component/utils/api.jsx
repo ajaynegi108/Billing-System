@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://invoice-backend-ocfk.onrender.com/api",
 
   maxContentLength: Infinity, // Remove content length limit
   maxBodyLength: Infinity, // Remove body length limit
@@ -38,7 +38,7 @@ api.interceptors.response.use(
         // Try refreshing the access token using the refresh token
         const refreshToken = localStorage.getItem("refreshToken");
         const response = await axios.post(
-          "http://localhost:5000/api/auth/refresh-token",
+          "https://invoice-backend-ocfk.onrender.com/api/auth/refresh-token",
           {
             refreshToken,
           }
