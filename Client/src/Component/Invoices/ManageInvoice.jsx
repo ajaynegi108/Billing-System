@@ -98,7 +98,7 @@ export default function ManageCustomer() {
             type="text"
             placeholder="Search..."
             onChange={handleSearchChange} // Trigger the debounced search on input change
-            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"
+            className="p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500 w-[100%]"
           />
         </div>
       </div>
@@ -113,29 +113,36 @@ export default function ManageCustomer() {
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="bg-gray-200">
+                <th className="border border-gray-300 p-4 text-left">
+                  Invoice ID
+                </th>
                 <th className="border border-gray-300 p-4 text-left">Name</th>
                 <th className="border border-gray-300 p-4 text-left">Email</th>
-                <th className="border border-gray-300 p-4 text-left">ABN</th>
-                <th className="border border-gray-300 p-4 text-left">
-                  Address
-                </th>
+                <th className="border border-gray-300 p-4 text-left">Amount</th>
                 <th className="border border-gray-300 p-4 text-left">Phone</th>
+                <th className="border border-gray-300 p-4 text-left">Status</th>
                 <th className="border border-gray-300 p-4 text-left">Action</th>
               </tr>
             </thead>
             <tbody>
               {invoices?.map((invoice) => (
                 <tr key={invoice._id}>
+                  <td className="border border-gray-300 p-4">
+                    {invoice._id}
+                    {/* TOS{invoice._id.slice(-4)} */}
+                  </td>
                   <td className="border border-gray-300 p-4">{invoice.name}</td>
                   <td className="border border-gray-300 p-4">
                     {invoice.email}
                   </td>
-                  <td className="border border-gray-300 p-4">{invoice.abn}</td>
                   <td className="border border-gray-300 p-4">
-                    {invoice.address1} {invoice.address2}
+                    ${invoice.totalAmount}
                   </td>
                   <td className="border border-gray-300 p-4">
                     {invoice?.phone}
+                  </td>
+                  <td className="border border-gray-300 p-4">
+                    {invoice?.invoiceStatus}
                   </td>
                   <td className="border border-gray-300 p-4">
                     <button
@@ -213,7 +220,11 @@ export default function ManageCustomer() {
               </button>
 
               <p className="mb-4 mt-4">
-                <InvoiceTemplate currentId={currentId} className="w-full" />
+                <InvoiceTemplate
+                  currentId={currentId}
+                  className="w-full"
+                  setOpenPreview={setOpenPreview}
+                />
               </p>
             </div>
           </div>

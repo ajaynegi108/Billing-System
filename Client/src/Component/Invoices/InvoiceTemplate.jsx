@@ -2,21 +2,29 @@ import React, { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import api from "../utils/api";
-
-export default function InvoiceTemplate({ currentId }) {
+import { useParams } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+export default function InvoiceTemplate({ currentId, setOpenPreview, email }) {
   const [invoiceData, setInvoiceData] = useState("");
-
+  const [isDisabled, setIsDisabled] = useState(false);
+  const { id } = useParams();
   useEffect(() => {
     const getInvoiceDetails = async () => {
       try {
-        const response = await api.get(`invoice/getinvoice/${currentId}`);
+        const invoiceId = id || currentId; // Default to id or currentId
+        if (!invoiceId) {
+          console.error("No valid ID provided");
+          return; // Exit if neither ID is available
+        }
+        const response = await api.get(`invoice/getinvoice/${invoiceId}`);
         setInvoiceData(response.data.invoice);
       } catch (error) {
         console.log(error);
       }
     };
+
     getInvoiceDetails();
-  }, [currentId]);
+  }, [currentId, id]);
 
   const downloadInvoice = () => {
     const input = document.getElementById("invoice");
@@ -56,8 +64,27 @@ export default function InvoiceTemplate({ currentId }) {
     return `${year}-${month}-${day}`;
   }
 
+  const SendInvoice = async () => {
+    setIsDisabled(true);
+    try {
+      const response = await api.post("/invoice/sendinvoice", {
+        email,
+        currentId,
+      });
+      toast.success("Invoice sent successfully to the registered account.");
+      setIsDisabled(false);
+      setTimeout(() => {
+        setOpenPreview(false);
+      }, 1000);
+    } catch (err) {
+      setIsDisabled(false);
+      console.error(err);
+    }
+  };
+
   return (
     <>
+      <ToastContainer />
       {invoiceData && (
         <div className="w-full mx-auto p-8 bg-white rounded-lg shadow-lg">
           <div id="invoice" className="p-4">
@@ -157,26 +184,40 @@ export default function InvoiceTemplate({ currentId }) {
             </table>
 
             <div className="font-semibold bg-gray-50 p-4 text-right">
-              <h3>Subtotal: ${invoiceData?.total.toFixed(2)}</h3>
+              <h3>Subtotal: ${invoiceData?.subtotal}</h3>
               <hr className="m-4" />
-              <h3>Tax: ${(invoiceData?.total * 0.1).toFixed(2)}</h3>
+              <h3>GST: ${invoiceData?.gst}</h3>
               <hr className="m-4" />
-              <h3>Total: ${(invoiceData?.total * 1.1).toFixed(2)}</h3>
+              <h3>Total: ${invoiceData?.totalAmount}</h3>
             </div>
 
             <footer className="mt-8 text-center text-gray-600">
               <p>Thank you for your business!</p>
             </footer>
           </div>
-
-          <div className="text-center mt-6">
-            <button
-              onClick={downloadInvoice}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Download Invoice
-            </button>
-          </div>
+          {!id && (
+            <>
+              <div className="flex justify-center gap-4">
+                <div className="text-center mt-6">
+                  <button
+                    onClick={downloadInvoice}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Download Invoice
+                  </button>
+                </div>
+                <div className="text-center mt-6">
+                  <button
+                    onClick={SendInvoice}
+                    disabled={isDisabled}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Send Invoice
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>

@@ -16,6 +16,15 @@ exports.createCustomer = async (req, res) => {
 
     const userId = req.user.userId;
 
+    // Check if a customer with the same email already exists
+    const existingCustomer = await Customer.findOne({ email: email });
+    if (existingCustomer) {
+      return res.status(400).json({
+        message: "Email address already exists",
+      });
+    }
+
+    // Create the new customer instance if email doesn't exist
     const newCustomer = new Customer({
       created_by: userId,
       name: name,
@@ -29,10 +38,12 @@ exports.createCustomer = async (req, res) => {
       abn: abn,
     });
 
+    // Save the validated customer
     const savedCustomer = await newCustomer.save();
 
     res.status(200).json({
       message: "Customer created successfully",
+      customer: savedCustomer,
     });
   } catch (error) {
     console.error(error);

@@ -42,10 +42,12 @@ export default function AddCustomer({
       } else {
         response = await api.post(`customer/create`, formData);
         toast.success(response.data.message);
-        navigate("/home/managecustomer");
+        setTimeout(() => {
+          navigate("/home/managecustomer");
+        }, 1500);
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.response.data.message);
     }
 
     // Handle form submission logic here

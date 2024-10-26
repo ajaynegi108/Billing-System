@@ -9,6 +9,8 @@ const {
   updateInvoice,
   deleteInvoice,
   getInvoiceCounts,
+  sendInvoice,
+  MakePayment,
 } = require("../controllers/invoiceController");
 
 router.post("/create", verifyToken, createInvoice);
@@ -17,5 +19,6 @@ router.delete("/delete/:id", verifyToken, deleteInvoice);
 router.get("/getinvoice/:id", verifyToken, getInvoiceById);
 router.get("/getall", verifyToken, getAllInvoiceByCreated);
 router.get("/getcount", verifyToken, getInvoiceCounts);
-
+router.post("/sendinvoice", verifyToken, sendInvoice);
+router.post("/payment", MakePayment);
 module.exports = router;

@@ -13,12 +13,7 @@ const customerSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
-    email: {
-      type: String,
-      unique: true, // Ensure email is unique
-      required: true,
-      default: null,
-    },
+    email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ },
     address1: {
       type: String,
       default: null,
@@ -46,7 +41,6 @@ const customerSchema = new mongoose.Schema(
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
-customerSchema.index({ email: 1 }, { unique: true });
 
 const Customer = mongoose.model("Customer", customerSchema);
 

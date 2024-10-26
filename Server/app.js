@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
-
+const stripe = require("stripe")(process.env.STRIPE_SKEY);
 const routes = require("./routes");
 const app = express();
 

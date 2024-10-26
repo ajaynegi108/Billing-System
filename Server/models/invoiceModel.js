@@ -57,7 +57,7 @@ const invoiceSchema = new mongoose.Schema(
       default: null,
       required: true,
     },
-    total: {
+    subtotal: {
       type: Number,
       default: null,
       required: true,
@@ -65,7 +65,7 @@ const invoiceSchema = new mongoose.Schema(
     invoiceType: {
       type: String,
       default: null,
-      required: true,
+      required: false,
     },
     invoiceStatus: {
       type: String,
@@ -84,6 +84,18 @@ const invoiceSchema = new mongoose.Schema(
     },
     dynamicFields: {
       type: Map,
+    },
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+    gst: {
+      type: Number,
+      required: true,
+    },
+    tax: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields

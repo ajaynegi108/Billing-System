@@ -22,7 +22,8 @@ import AddTemplate from "./Component/Templates/AddTemplate";
 import ManageTemplate from "./Component/Templates/ManageTemplate";
 import CustomerDashboard from "./Component/Customers/CustomerDashboard";
 import Payment from "./Component/PaymentForm/Payment";
-
+import CustomerLogin from "./Component/Form/CustomerLogin/CustomerLogin";
+import CustomerSideBar from "./Component/Navbar/CustomerBar/CustomerSideBar";
 function App() {
   return (
     <>
@@ -47,8 +48,10 @@ function App() {
             <Route path="createtemplate" element={<AddTemplate />} />
             <Route path="managetemplate" element={<ManageTemplate />} />
             <Route path="customerdashboard" element={<CustomerDashboard />} />
-            <Route path="payment" element={<Payment />} />
           </Route>
+          <Route path="payment/:id" element={<Payment />} />
+          <Route path="customerlogin" element={<CustomerLogin />} />
+          <Route path="customersidebar" element={<CustomerSideBar />} />
         </Routes>
       </BrowserRouter>
     </>

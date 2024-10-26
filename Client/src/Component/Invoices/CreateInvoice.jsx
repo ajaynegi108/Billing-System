@@ -38,22 +38,21 @@ export default function CreateInvoice({
     }
   };
 
-  const [invoiceType, setInvoiceType] = useState("Invoice");
   const [invoiceStatus, setInvoiceStatus] = useState("open");
   const [invoiceDate, setInvoiceDate] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  const [total, setTotal] = useState(0.0);
-  // const [subtotal, setSubtotal] = useState(0.0);
+  const [subtotal, setsubTotal] = useState(0.0);
+
   // const [discount, setDiscount] = useState(0.0);
   // const [shipping, setShipping] = useState(0.0);
-  const [tax, setTax] = useState(0.0);
+
   const [customerList, setCustomerList] = useState([]);
   const [productList, setProductList] = useState([]);
-  // const [removeTax, setRemoveTax] = useState(false);
+  const [taxAmount, setTaxAmount] = useState(10);
 
   const [products, setProducts] = useState([
-    { name: "", quantity: 1, price: 0.0, discount: 0.0, subtotal: 0.0 },
+    { name: "", quantity: 0, price: 0.0, discount: 0.0, subtotal: 0.0 },
   ]);
 
   const handleChange = (e) => {
@@ -122,13 +121,13 @@ export default function CreateInvoice({
 
   const calculateTotal = () => {
     // const totalTax = removeTax ? 0 : tax;
-    const totalTax = tax;
+
     const productTotal = products.reduce(
       (acc, product) => acc + product.subtotal,
       0
     );
-    const totalAmount = productTotal + totalTax;
-    setTotal(totalAmount);
+    const totalAmount = productTotal;
+    setsubTotal(totalAmount);
     return totalAmount;
   };
   useEffect(() => {
@@ -147,11 +146,15 @@ export default function CreateInvoice({
       ...formData, // Static fields like name, email, etc.
       dynamicFields, // Dynamic fields (key-value pairs)
       products, // Products array
-      invoiceType, // Invoice type
+
       invoiceStatus, // Invoice status
       invoiceDate, // Invoice creation date
       dueDate, // Due date
-      total, // Total amount
+
+      subtotal,
+      totalamount: (subtotal + subtotal * (10 / 100)).toFixed(2),
+      tax: taxAmount,
+      gst: (subtotal * (10 / 100)).toFixed(2),
     };
 
     try {
@@ -250,7 +253,11 @@ export default function CreateInvoice({
         const {
           dynamicFields,
           product,
-          invoiceType,
+          gst,
+          tax,
+          totalAmount,
+          subtotal,
+
           invoiceStatus,
           invoiceDate,
           dueDate,
@@ -258,7 +265,7 @@ export default function CreateInvoice({
         setFormData(response.data.invoice);
         setProducts(product);
         const dataArray = Object.entries(dynamicFields);
-        setInvoiceType(invoiceType);
+
         setInvoiceStatus(invoiceStatus);
         setInvoiceDate(invoiceDate);
         setDueDate(dueDate);
@@ -295,7 +302,7 @@ export default function CreateInvoice({
           {/* Invoice Type and Details */}
           <div className="w-[100%] mx-auto p-4 flex items-center ">
             <div className="flex items-center w-[100%]">
-              <div className="w-[35%] flex items-center">
+              {/* <div className="w-[35%] flex items-center">
                 <label className="mr-2 text-lg">Select Type:</label>
                 <select
                   value={invoiceType}
@@ -306,8 +313,8 @@ export default function CreateInvoice({
                   <option>Quote</option>
                   <option>Receipt</option>
                 </select>
-              </div>
-              <div className="w-[15%] flex items-center">
+              </div> */}
+              {/* <div className="w-[10%] flex items-center">
                 <label className="ml-4 mr-2">Status:</label>
                 <select
                   value={invoiceStatus}
@@ -317,29 +324,40 @@ export default function CreateInvoice({
                   <option>open</option>
                   <option>paid</option>
                 </select>
-              </div>
+              </div> */}
 
-              <div className="w-[25%] flex items-center">
+              <div className="w-[50%] flex items-center">
                 <label className="ml-4 mr-2">Invoice Date:</label>
                 <input
                   type="date"
                   value={invoiceDate}
                   onChange={(e) => setInvoiceDate(e.target.value)}
-                  className="p-2 border border-gray-300 rounded"
+                  className="p-2 border border-gray-300 rounded w-[70%]"
                   required
                 />
               </div>
 
-              <div className="w-[25%] flex items-center">
+              <div className="w-[50%] flex items-center">
                 <label className="ml-4 mr-2">Due Date:</label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="p-2 border border-gray-300 rounded"
+                  className="p-2 border border-gray-300 rounded  w-[70%]"
                   required
                 />
               </div>
+              {/* <div className="w-[15%] flex items-center">
+                <label className="ml-4 mr-2">Tax:</label>
+                <input
+                  type="input"
+                  value={taxAmount}
+                  min="0"
+                  onChange={(e) => setTaxAmount(e.target.value)}
+                  className="p-2 border border-gray-300 rounded w-full"
+                  required
+                />
+              </div> */}
             </div>
           </div>
           {/* Customer Information */}
@@ -651,7 +669,8 @@ export default function CreateInvoice({
                     <td className="border border-gray-300 px-4 py-2">
                       <input
                         type="number"
-                        value={product.quantity}
+                        min="0"
+                        value={product.quantity || 0} // Set default value to 0
                         onChange={(e) =>
                           handleProductChange(
                             index,
@@ -738,10 +757,12 @@ export default function CreateInvoice({
                 </div>
                 <p>TAX/VAT: ${removeTax ? 0 : tax.toFixed(2)}</p>
               </div> */}
-              <div>
-                <h4 className="text-lg font-bold">
-                  Total: ${total.toFixed(2)}
-                </h4>
+              <div className="font-semibold bg-gray-50 p-4 text-right flex justify-between w-[100%]">
+                <h3>Sub Total: ${subtotal}</h3>
+                <hr className="m-4" />
+                <h3>GST: ${(subtotal * (10 / 100)).toFixed(2)}</h3>
+                <hr className="m-4" />
+                <h3>Total: ${(subtotal + subtotal * (10 / 100)).toFixed(2)}</h3>
               </div>
             </div>
           </div>
