@@ -3,30 +3,31 @@ const Product = require("../models/productModel");
 exports.createProduct = async (req, res) => {
   try {
     // Get userId from the verified token
+    const userId = req.user.userId; // Set in the verifyToken middleware
 
-    const {
-      name,
+    // Destructure required fields from the request body
+    const { name, price, description } = req.body;
 
-      price,
-      description,
-    } = req.body;
+    // Check for required fields
+    if (!name || !price) {
+      return res.status(400).json({ message: "Name and price are required" });
+    }
 
-    const userId = req.user.userId; // This is set in the verifyToken middleware
-
-    // Create a new project with an empty template and user ID
+    // Create a new product with the provided details
     const newProduct = new Product({
-      created_by: userId, // Associate the project with the user
-      name: name,
-      description: description,
-      price: price,
+      created_by: userId,
+      name,
+      description,
+      price,
     });
 
-    // // Save the project to the database
-    const savedProject = await newProduct.save();
+    // Save the product to the database
+    const savedProduct = await newProduct.save();
 
-    // Return the project ID in the response
+    // Return success message and saved product details in the response
     res.status(200).json({
       message: "Product created successfully",
+      product: savedProduct,
     });
   } catch (error) {
     console.error(error);

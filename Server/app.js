@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173", // Frontend development URL
-  "https://your-frontend-production-url.com", // Production frontend URL
+  "https://invoice-backend-ocfk.onrender.com", // Production frontend URL
+  "https://billing-system-three.vercel.app",
 ];
 
 app.use(
@@ -30,15 +31,7 @@ app.use(
     credentials: true, // Allows cookies to be sent
   })
 );
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://invoice-backend-ocfk.onrender.com",
-    ], // Replace with your frontend URL
-    credentials: true, // Allows sending cookies with requests
-  })
-);
+//
 
 // Routes
 app.use("/api", routes);

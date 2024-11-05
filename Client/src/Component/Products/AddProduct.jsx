@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-export default function AddCustomer({
+
+export default function AddProduct({
   type = "create",
   productId,
   setIsOpen,
-  getCustomerList,
+  getProductList,
 }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ export default function AddCustomer({
     description: "",
     price: "",
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,54 +25,60 @@ export default function AddCustomer({
     }));
   };
 
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Product name is required.";
+    if (!formData.description.trim())
+      newErrors.description = "Product description is required.";
+    if (!formData.price || parseFloat(formData.price) <= 0)
+      newErrors.price = "Price must be a positive number.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
 
     try {
       let response;
-      if (type === "update") {
+      if (type === "update" && productId) {
         response = await api.put(`product/update/${productId}`, formData);
-        toast.success(response.data.message);
+        toast.success(response.data.message || "Product updated successfully");
         setIsOpen(false);
-        getCustomerList();
+        getProductList();
       } else {
         response = await api.post(`product/create`, formData);
-        toast.success(response.data.message);
+        toast.success(response.data.message || "Product created successfully");
         setTimeout(() => {
           navigate("/home/manageproduct");
         }, 1000);
       }
     } catch (error) {
-      console.error(error);
+      toast.error(error.response?.data?.message || "Error saving product");
     }
-
-    // Handle form submission logic here
   };
 
   useEffect(() => {
-    const getCustomerById = async () => {
-      try {
-        const response = await api.get(`/product/getproduct/${productId}`);
-        setFormData(response.data.customer);
-      } catch (err) {
-        console.log(err);
+    const getProductById = async () => {
+      if (type === "update" && productId) {
+        try {
+          const response = await api.get(`/product/getproduct/${productId}`);
+          setFormData(response.data.product);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
-    getCustomerById();
-  }, [productId]);
+    getProductById();
+  }, [productId, type]);
 
   return (
     <>
-      {type !== "update" && (
-        <>
-          {" "}
-          <ToastContainer />
-        </>
-      )}
+      <ToastContainer />
       <h1 className="text-4xl font-bold m-12">
         {type === "update" ? "Edit Product Details" : "Add Product"}
       </h1>
-
       <div className="max-w-4xl mx-auto p-4 bg-[#E7E7E7]">
         <h3 className="text-lg font-semibold mb-2">Product Information</h3>
       </div>
@@ -94,6 +102,9 @@ export default function AddCustomer({
                 className="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+              )}
             </div>
             <div className="flex-1">
               <label
@@ -112,6 +123,11 @@ export default function AddCustomer({
                 className="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
             <div className="flex-1">
               <label
@@ -130,6 +146,9 @@ export default function AddCustomer({
                 className="mt-1 block w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
+              {errors.price && (
+                <p className="text-red-500 text-xs mt-1">{errors.price}</p>
+              )}
             </div>
           </div>
 
@@ -138,7 +157,7 @@ export default function AddCustomer({
               type="submit"
               className="w-48 bg-green-500 text-white font-semibold py-2 rounded hover:bg-green-600 transition duration-200 mt-7"
             >
-              {type === "update" ? <>Update Product</> : <>Add Product</>}
+              {type === "update" ? "Update Product" : "Add Product"}
             </button>
           </div>
         </form>

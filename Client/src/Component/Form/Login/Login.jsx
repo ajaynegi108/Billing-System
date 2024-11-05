@@ -42,7 +42,8 @@ export default function Login() {
       try {
         // Send login data to the server
         const response = await axios.post(
-          "http://localhost:5000/api/auth/login",
+          // "http://localhost:5000/api/auth/login",
+          "https://invoice-backend-ocfk.onrender.com/api/auth/login",
           {
             email: formData.email,
             password: formData.password,
@@ -53,6 +54,7 @@ export default function Login() {
         if (response.status === 200) {
           localStorage.setItem("accessToken", response.data.accessToken);
           localStorage.setItem("refreshToken", response.data.refreshToken);
+          localStorage.setItem("fullname", response.data.fullname);
           // localStorage.setItem("user_id", response.data.user_id);
 
           // Redirect to the home page
@@ -74,7 +76,7 @@ export default function Login() {
   };
 
   return (
-    <div className="login-container">
+    <div className="logincontainer">
       <h2 id="login-header">Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group" id="email-group">

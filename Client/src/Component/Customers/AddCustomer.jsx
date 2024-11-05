@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 export default function AddCustomer({
   type,
   userId,
@@ -12,6 +13,7 @@ export default function AddCustomer({
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    abn: "",
     address1: "",
     address2: "",
     city: "",
@@ -32,47 +34,45 @@ export default function AddCustomer({
     e.preventDefault();
 
     try {
-      let endPoint = "";
-      let response;
+      const endpoint =
+        type === "update" ? `customer/update/${userId}` : "customer/create";
+      const response =
+        type === "update"
+          ? await api.put(endpoint, formData)
+          : await api.post(endpoint, formData);
+
+      toast.success(response.data.message);
       if (type === "update") {
-        response = await api.put(`customer/update/${userId}`, formData);
         setIsOpen(false);
         getCustomerList();
-        toast.success(response.data.message);
       } else {
-        response = await api.post(`customer/create`, formData);
-        toast.success(response.data.message);
         setTimeout(() => {
           navigate("/home/managecustomer");
         }, 1500);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred");
     }
-
-    // Handle form submission logic here
   };
 
   useEffect(() => {
-    const getCustomerById = async () => {
-      try {
-        const response = await api.get(`/customer/getcustomer/${userId}`);
-        setFormData(response.data.customer);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getCustomerById();
-  }, [userId]);
+    if (type === "update") {
+      const getCustomerById = async () => {
+        try {
+          const response = await api.get(`/customer/getcustomer/${userId}`);
+          setFormData(response.data.customer);
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to fetch customer details");
+        }
+      };
+      getCustomerById();
+    }
+  }, [type, userId]);
 
   return (
     <>
-      {type !== "update" && (
-        <>
-          {" "}
-          <ToastContainer />
-        </>
-      )}
+      <ToastContainer />
       <h1 className="text-4xl font-bold m-12">
         {type === "update" ? "Edit Customer Details" : "Add Customer"}
       </h1>
@@ -138,6 +138,7 @@ export default function AddCustomer({
               />
             </div>
           </div>
+
           <div className="flex flex-wrap gap-4 mb-4">
             <div className="flex-1">
               <label
@@ -256,7 +257,7 @@ export default function AddCustomer({
               type="submit"
               className="w-48 bg-green-500 text-white font-semibold py-2 rounded hover:bg-green-600 transition duration-200 mt-7"
             >
-              {type === "update" ? <>Update Customer</> : <>Add Customer</>}
+              {type === "update" ? "Update Customer" : "Add Customer"}
             </button>
           </div>
         </form>
