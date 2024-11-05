@@ -147,12 +147,7 @@ export default function Dashboard() {
     <>
       {console.log(pieD)}
       <div className="flex flex-wrap justify-start space-x-6 space-y-6">
-        <Box
-          number="1678"
-          title="Sales Amount"
-          icon={<FaMoneyBillWave />}
-          bgColor="bg-blue-500"
-        />
+        {/* <Box number="1678" title="Sales Amount" icon={<FaMoneyBillWave />}  bgColor="bg-blue-500"/> */}
         <Box
           number={dashboardData.invoiceCount.totalCount}
           title="Total Invoices"
@@ -171,12 +166,7 @@ export default function Dashboard() {
           icon={<FaCheckCircle />}
           bgColor="bg-gray-500"
         />
-        <Box
-          number="1200"
-          title="Due Amount"
-          icon={<FaWallet />}
-          bgColor="bg-red-500"
-        />
+        {/* <Box number="1200" title="Due Amount" icon={<FaWallet />} bgColor="bg-red-500"/> */}
         <Box
           number={dashboardData.productCount}
           title="Total Products"

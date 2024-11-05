@@ -77,16 +77,6 @@ export default function Sidebar() {
                         </span>
                       </NavLink>
                     </li>
-                    <li>
-                      <NavLink
-                        to="invoicedownload"
-                        className="block hover:bg-gray-600 p-2 rounded"
-                      >
-                        <span className="flex items-center">
-                          <IoMdDownload className="mr-2" /> Download CSV
-                        </span>
-                      </NavLink>
-                    </li>
                   </ul>
                 )}
               </li>
@@ -168,7 +158,7 @@ export default function Sidebar() {
                   </ul>
                 )}
               </li>
-              <li>
+              {/* <li>
                 <button
                   onClick={() => setUsersOpen(!isUsersOpen)}
                   className="flex items-center justify-between w-full text-left hover:bg-gray-700 p-2 rounded"
@@ -206,7 +196,7 @@ export default function Sidebar() {
                     </li>
                   </ul>
                 )}
-              </li>
+              </li> */}
               <li>
                 <button
                   onClick={() => setTemplateOpen(!isTemplateOpen)}

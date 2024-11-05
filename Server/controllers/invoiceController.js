@@ -429,8 +429,6 @@ exports.sendInvoice = async (req, res) => {
         to: invoiceData.email,
         subject: `Invoice Number TOS${invoiceIdString.slice(-4)}`,
         html: `<p>Please find the attached invoice.</p>
-
-// <p><a href="http://localhost:5173/payment/${invoiceData._id}">Click Here to Pay</a></p>
 <p><a href="https://billing-system-three.vercel.app/payment/${invoiceData._id}">Click Here to Pay</a></p>
 `,
         attachments: [
