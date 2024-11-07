@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./assets/css/PasswordReset.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import the Toast CSS
@@ -13,7 +13,6 @@ export default function SetPassword() {
   const [error, setError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { id } = useParams();
-  const navigate = useNavigate(); // Use useNavigate hook
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -34,13 +33,9 @@ export default function SetPassword() {
 
       console.log(response); // Log the response to check its contents
 
-      if (response.data.success) {
+      if (response.data.success === true) {
         // Show success toast
         toast.success("Password has been successfully reset!");
-        // Redirect to login page after successful reset
-        setTimeout(() => {
-          navigate("/login"); // Redirect to login page
-        }, 2000); // Delay redirection to allow the toast to display
       } else {
         // If the success flag isn't set, show an error
         toast.error("Something went wrong. Please try again.");
