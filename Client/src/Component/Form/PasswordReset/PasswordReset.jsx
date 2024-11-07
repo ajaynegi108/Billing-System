@@ -21,7 +21,8 @@ export default function PasswordReset() {
     try {
       // API request for password reset
       const response = await axios.post(
-        "http://localhost:5000/api/auth/forget", // Change to your actual endpoint
+        // "http://localhost:5000/api/auth/forget",
+        "https://invoice-backend-ocfk.onrender.com/api/auth/forget",
         { email }
       );
 
