@@ -81,6 +81,7 @@ export default function Login() {
       <form onSubmit={handleSubmit} className="login-form">
         <div className="form-group" id="email-group">
           <div className="input-div">
+            <label className="m-2">Email</label>
             <input
               id="email-input"
               className={`input-field ${errors.email ? "input-error" : ""}`}
@@ -90,17 +91,13 @@ export default function Login() {
               onChange={handleChange}
               placeholder="Email"
             />
-            <label
-              htmlFor="email-input"
-              className={`floating-label ${formData.email ? "focused" : ""}`}
-            >
-              Email
-            </label>
+
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
         </div>
         <div className="form-group" id="password-group">
           <div className="input-div">
+            <label className="m-2">Password</label>
             <input
               id="password-input"
               className={`input-field ${errors.password ? "input-error" : ""}`}
@@ -110,14 +107,9 @@ export default function Login() {
               onChange={handleChange}
               placeholder="Password"
             />
-            <label
-              htmlFor="password-input"
-              className={`floating-label ${formData.password ? "focused" : ""}`}
-            >
-              Password
-            </label>
+
             <span
-              className="password-toggle"
+              className="password-toggle mt-3"
               onClick={togglePasswordVisibility}
             >
               {passwordVisible ? <FaEyeSlash /> : <FaEye />}
@@ -129,7 +121,11 @@ export default function Login() {
         </div>
         {serverError && <p className="server-error">{serverError}</p>}{" "}
         {/* Display server error message */}
-        <button type="submit" id="login-button" className="submit-button">
+        <button
+          type="submit"
+          id="login-button"
+          className="submit-button bg-blue-500 hover:bg-blue-600"
+        >
           Login
         </button>
       </form>

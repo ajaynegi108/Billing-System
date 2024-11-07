@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const nodemailer = require("nodemailer");
 //Signup
 
 exports.signup = async (req, res) => {
@@ -131,4 +131,97 @@ exports.logout = (req, res) => {
   res.clearCookie("refreshToken");
 
   res.status(200).json({ message: "Logged out successfully" });
+};
+
+exports.forget = async (req, res) => {
+  const { email } = req.body;
+
+  // Validate input
+  if (!email) {
+    return res.status(400).json({ message: "Email is required." });
+  }
+
+  try {
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email." });
+    }
+
+    // Generate a token with the user's ID
+    const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Token expires in 1 hour
+    });
+
+    // Save the reset token to the user's record
+    user.resetToken = resetToken;
+    await user.save();
+
+    // Configure nodemailer to send the email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "negi.ajay108@gmail.com",
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
+
+    // Email content with reset link
+    const resetLink = `http://localhost:5173/confirm/${resetToken}`;
+    const mailOptions = {
+      from: "hariom@techomsystems.com.au",
+      to: email,
+      subject: "Reset Password",
+      html: `<p>Click the link below to reset your password:</p>
+             <a href="${resetLink}">Reset Password</a>`,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      message: "Reset link sent to your email.",
+      user_id: user._id, // Optionally include user ID
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  // Validate input
+  if (!token || !newPassword) {
+    return res
+      .status(400)
+      .json({ message: "Token and new password are required." });
+  }
+
+  try {
+    // Verify and decode the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user || user.resetToken !== token) {
+      return res.status(401).json({ message: "Invalid or expired token." });
+    }
+
+    // Hash the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // Update the user's password and clear the reset token
+    user.password = hashedPassword;
+    user.resetToken = undefined; // Clear the reset token
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error", error });
+  }
 };

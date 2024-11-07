@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     role: { type: Number, required: false },
     phone: { type: String, required: true },
     email: { type: String, required: true, unique: true, match: /.+\@.+\..+/ }, // Email format validation
+    resetToken: { type: String, required: false },
   },
   { timestamps: true }
 );

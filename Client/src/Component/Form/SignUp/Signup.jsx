@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate, NavLink } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import "react-toastify/dist/ReactToastify.css"; // Import the CSS for the toast notifications
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +18,7 @@ const SignupForm = () => {
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,9 +55,12 @@ const SignupForm = () => {
         "https://invoice-backend-ocfk.onrender.com/api/auth/register",
         formData
       );
-      setSuccessMessage(
+
+      // Display a success toast notification
+      toast.success(
         "Signup successful! Please check your email for confirmation."
       );
+
       setFormData({
         fullname: "",
         companyName: "",
@@ -69,6 +77,10 @@ const SignupForm = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   return (
     <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">Register a User</h2>
@@ -83,10 +95,11 @@ const SignupForm = () => {
           </label>
           <input
             type="text"
+            placeholder="Full Name"
             name="fullname"
             value={formData.fullname}
             onChange={handleChange}
-            className={`mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-blue-500 ${
+            className={`mt-1 p-2 block w-full border rounded-md ${
               errors.fullname ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -100,10 +113,11 @@ const SignupForm = () => {
           </label>
           <input
             type="text"
+            placeholder="Company Name"
             name="companyName"
             value={formData.companyName}
             onChange={handleChange}
-            className={`mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-blue-500 ${
+            className={`mt-1 p-2 block w-full border rounded-md ${
               errors.companyName ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -117,10 +131,11 @@ const SignupForm = () => {
           </label>
           <input
             type="email"
+            placeholder="Email Address"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-blue-500 ${
+            className={`mt-1 p-2 block w-full border rounded-md ${
               errors.email ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -134,10 +149,11 @@ const SignupForm = () => {
           </label>
           <input
             type="tel"
+            placeholder="Phone Number"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className={`mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-blue-500 ${
+            className={`mt-1 p-2 block w-full border rounded-md ${
               errors.phone ? "border-red-500" : "border-gray-300"
             }`}
           />
@@ -149,19 +165,30 @@ const SignupForm = () => {
           <label className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className={`mt-1 p-2 block w-full border rounded-md focus:ring focus:ring-blue-500 ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            }`}
-          />
+          <div className="relative">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              placeholder="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className={`mt-1 p-2 block w-full border rounded-md  ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            <span
+              className="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer z-10 text-lg text-gray-500"
+              onClick={togglePasswordVisibility}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
           {errors.password && (
             <p className="text-red-600 text-sm">{errors.password}</p>
           )}
         </div>
+
         <button
           type="submit"
           disabled={loading}
@@ -174,10 +201,13 @@ const SignupForm = () => {
       </form>
       <p className="mt-4 text-sm text-center text-gray-600">
         Already have an account?{" "}
-        <a href="/login" className="text-blue-500 hover:underline">
+        <NavLink to="/login" className="text-blue-500 hover:underline">
           Log in
-        </a>
+        </NavLink>
       </p>
+
+      {/* ToastContainer for toast notifications */}
+      <ToastContainer />
     </div>
   );
 };

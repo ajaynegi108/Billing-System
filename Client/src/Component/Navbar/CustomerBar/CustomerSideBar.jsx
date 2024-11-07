@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AiTwotoneDashboard } from "react-icons/ai";
 import { TbFileInvoice } from "react-icons/tb";
 import { AiOutlineProduct } from "react-icons/ai";
-import { SlPeople } from "react-icons/sl";
+
 import { FaRegUser } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { MdKeyboardArrowDown } from "react-icons/md"; // Dropdown icon
@@ -10,7 +10,8 @@ import { NavLink } from "react-router-dom";
 import { IoMdDownload } from "react-icons/io";
 import { CiSettings } from "react-icons/ci";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { ImInsertTemplate } from "react-icons/im";
+
+import { MdHistory } from "react-icons/md";
 
 export default function CustomerSideBar() {
   const [isInvoicesOpen, setInvoicesOpen] = useState(false);
@@ -53,7 +54,7 @@ export default function CustomerSideBar() {
                 to="servicelist"
                 className="flex items-center hover:bg-gray-700 p-2 rounded"
               >
-                <TbFileInvoice className="mr-2" /> Services
+                <AiOutlineProduct className="mr-2" /> Services
               </NavLink>
             </li>
             <li>
@@ -61,7 +62,7 @@ export default function CustomerSideBar() {
                 to="paymenthistory"
                 className="flex items-center hover:bg-gray-700 p-2 rounded"
               >
-                <TbFileInvoice className="mr-2" /> Payment History
+                <MdHistory className="mr-2" /> Payment History
               </NavLink>
             </li>
           </ul>

@@ -35,7 +35,7 @@ export default function Sidebar() {
             <ul className="space-y-1 p-2">
               <li>
                 <NavLink
-                  to="dashboard"
+                  to="/home/dashboard"
                   className="flex items-center hover:bg-gray-700 p-2 rounded"
                 >
                   <AiTwotoneDashboard className="mr-2" /> Dashboard
@@ -59,7 +59,7 @@ export default function Sidebar() {
                   <ul className="ml-4 space-y-1">
                     <li>
                       <NavLink
-                        to="createinvoice"
+                        to="/home/createinvoice"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -69,7 +69,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                       <NavLink
-                        to="manageinvoice"
+                        to="/home/manageinvoice"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -98,7 +98,7 @@ export default function Sidebar() {
                   <ul className="ml-4 space-y-2">
                     <li>
                       <NavLink
-                        to="addproduct"
+                        to="/home/addproduct"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -108,7 +108,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                       <NavLink
-                        to="manageproduct"
+                        to="/home/manageproduct"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -137,7 +137,7 @@ export default function Sidebar() {
                   <ul className="ml-4 space-y-2">
                     <li>
                       <NavLink
-                        to="addcustomer"
+                        to="/home/addcustomer"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -147,7 +147,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                       <NavLink
-                        to="managecustomer"
+                        to="/home/managecustomer"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -215,7 +215,7 @@ export default function Sidebar() {
                   <ul className="ml-4 space-y-1">
                     <li>
                       <NavLink
-                        to="createtemplate"
+                        to="/home/createtemplate"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
@@ -225,7 +225,7 @@ export default function Sidebar() {
                     </li>
                     <li>
                       <NavLink
-                        to="managetemplate"
+                        to="/home/managetemplate"
                         className="block hover:bg-gray-600 p-2 rounded"
                       >
                         <span className="flex items-center">
