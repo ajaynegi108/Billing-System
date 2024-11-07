@@ -167,7 +167,9 @@ exports.forget = async (req, res) => {
     });
 
     // Email content with reset link
-    const resetLink = `http://localhost:5173/confirm/${resetToken}`;
+    // const resetLink = `http://localhost:5173/confirm/${resetToken}`;
+    const resetLink = `https://billing-system-three.vercel.app/confirm/${resetToken}`;
+
     const mailOptions = {
       from: "hariom@techomsystems.com.au",
       to: email,
