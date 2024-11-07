@@ -32,9 +32,14 @@ export default function SetPassword() {
         { newPassword: password, token: id }
       );
 
+      console.log(response); // Log the response to check its contents
+
       if (response.data.success) {
         // Show success toast
         toast.success("Password has been successfully reset!");
+      } else {
+        // If the success flag isn't set, show an error
+        toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
       console.log(error);
