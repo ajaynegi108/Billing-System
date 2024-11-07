@@ -33,7 +33,7 @@ export default function SetPassword() {
 
       console.log(response); // Log the response to check its contents
 
-      if (response.data.success) {
+      if (response.data.success === true) {
         // Show success toast
         toast.success("Password has been successfully reset!");
       } else {
