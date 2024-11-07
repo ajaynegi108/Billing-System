@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./assets/css/PasswordReset.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
@@ -13,6 +13,7 @@ export default function SetPassword() {
   const [error, setError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -27,19 +28,18 @@ export default function SetPassword() {
     try {
       // Sending the reset password request
       const response = await axios.post(
+        // "http://localhost:5000/api/auth/reset",
         "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
         { newPassword: password, token: id }
       );
 
-      console.log(response); // Log the response to check its contents
+      console.log(response);
 
-      if (response.data.success === true) {
-        // Show success toast
-        toast.success("Password has been successfully reset!");
-      } else {
-        // If the success flag isn't set, show an error
-        toast.error("Something went wrong. Please try again.");
-      }
+      toast.success("Password has been successfully reset!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error) {
       console.error(error);
       // Show error toast if something goes wrong
