@@ -21,13 +21,12 @@ export default function SetPassword() {
       setError("Passwords do not match");
       return;
     } else {
-      setError("");
+      setError(""); // Clear error message
     }
 
     try {
       // Sending the reset password request
       const response = await axios.post(
-        // "http://localhost:5000/api/auth/reset",
         "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
         { newPassword: password, token: id }
       );
@@ -42,7 +41,7 @@ export default function SetPassword() {
         toast.error("Something went wrong. Please try again.");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // Show error toast if something goes wrong
       toast.error("Something went wrong. Please try again.");
     }
