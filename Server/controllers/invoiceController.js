@@ -2,7 +2,7 @@ const Invoice = require("../models/invoiceModel");
 const nodemailer = require("nodemailer");
 const pdf = require("html-pdf");
 const stripe = require("stripe")(process.env.STRIPE_SKEY);
-
+import { toPng } from "html-to-image";
 const { ObjectId } = require("mongodb");
 
 exports.createInvoice = async (req, res) => {

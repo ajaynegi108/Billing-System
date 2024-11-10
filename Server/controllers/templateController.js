@@ -1,6 +1,6 @@
 const InvoiceTemplate = require("../models/templateModel");
 const mongoose = require("mongoose"); // Import mongoose for ObjectId validation
-const nodeHtmlToImage = require("node-html-to-image");
+import { toPng } from "html-to-image";
 
 exports.updateProduct = async (req, res) => {
   try {
@@ -29,10 +29,8 @@ exports.updateProduct = async (req, res) => {
     // Convert content to an image and then to base64 (if content is updated)
     let base64Thumbnail;
     if (content) {
-      const imageBuffer = await nodeHtmlToImage({
-        html: content,
-      });
-      base64Thumbnail = imageBuffer.toString("base64");
+      const dataUrl = await toPng(content);
+      base64Thumbnail = dataUrl.replace(/^data:image\/png;base64,/, "");
     }
 
     // Update the template fields
