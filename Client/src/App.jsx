@@ -33,7 +33,7 @@ const PrivateRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("accessToken"); // Example: checking if user is authenticated via token
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login/admin" />;
   }
 
   return children;

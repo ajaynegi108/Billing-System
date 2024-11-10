@@ -2,7 +2,7 @@ const Invoice = require("../models/invoiceModel");
 const nodemailer = require("nodemailer");
 const pdf = require("html-pdf");
 const stripe = require("stripe")(process.env.STRIPE_SKEY);
-const nodeHtmlToImage = require("node-html-to-image");
+
 const { ObjectId } = require("mongodb");
 
 exports.createInvoice = async (req, res) => {
@@ -134,13 +134,12 @@ exports.createInvoice = async (req, res) => {
     `;
 
     // Convert HTML content to Base64
-    const imageBuffer = await nodeHtmlToImage({
-      html: htmlContent,
-      encoding: "base64", // This will return the image as a base64 encoded string
-    });
 
+    const dataUrl = await toPng(htmlContent);
     // Add base64 to the invoice document
-    newInvoice.thumbnail = imageBuffer;
+    const base64Image = dataUrl.replace(/^data:image\/png;base64,/, ""); // Remove prefix if you want just base64
+
+    newInvoice.thumbnail = base64Image;
 
     // Save the invoice to the database
     const savedInvoice = await newInvoice.save();
