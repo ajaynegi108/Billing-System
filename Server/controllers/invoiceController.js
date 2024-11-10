@@ -2,8 +2,42 @@ const Invoice = require("../models/invoiceModel");
 const nodemailer = require("nodemailer");
 const pdf = require("html-pdf");
 const stripe = require("stripe")(process.env.STRIPE_SKEY);
-import { toPng } from "html-to-image";
+const poppler = require("pdf-poppler");
 const { ObjectId } = require("mongodb");
+const fs = require("fs").promises;
+function htmlToPdfBuffer(htmlContent) {
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlContent).toBuffer((err, buffer) => {
+      if (err) return reject(err);
+      resolve(buffer);
+    });
+  });
+}
+async function pdfToImageBuffer(pdfBuffer) {
+  const pdfFilePath = "./temp.pdf";
+  const outputFilePath = "./temp.png";
+
+  // Save the PDF buffer to a temporary file
+  await fs.writeFile(pdfFilePath, pdfBuffer);
+
+  // Convert the PDF to PNG
+  await poppler.convert(pdfFilePath, {
+    format: "png",
+    out_dir: ".",
+    out_prefix: "temp",
+    page: 1,
+  });
+
+  // Read the generated image file and encode it to base64
+  const imageBuffer = await fs.readFile(outputFilePath);
+  const base64Image = imageBuffer.toString("base64");
+
+  // Cleanup temporary files
+  await fs.unlink(pdfFilePath);
+  await fs.unlink(outputFilePath);
+
+  return base64Image;
+}
 
 exports.createInvoice = async (req, res) => {
   try {
@@ -135,11 +169,12 @@ exports.createInvoice = async (req, res) => {
 
     // Convert HTML content to Base64
 
-    const dataUrl = await toPng(htmlContent);
+    const pdfBuffer = await htmlToPdfBuffer(htmlContent);
+    const base64Thumbnail = await pdfToImageBuffer(pdfBuffer);
     // Add base64 to the invoice document
-    const base64Image = dataUrl.replace(/^data:image\/png;base64,/, ""); // Remove prefix if you want just base64
+    // const base64Image = dataUrl.replace(/^data:image\/png;base64,/, ""); // Remove prefix if you want just base64
 
-    newInvoice.thumbnail = base64Image;
+    newInvoice.thumbnail = base64Thumbnail;
 
     // Save the invoice to the database
     const savedInvoice = await newInvoice.save();
