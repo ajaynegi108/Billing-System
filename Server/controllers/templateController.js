@@ -1,41 +1,7 @@
 const InvoiceTemplate = require("../models/templateModel");
 const mongoose = require("mongoose"); // Import mongoose for ObjectId validation
-const pdf = require("html-pdf");
-const poppler = require("pdf-poppler");
-const fs = require("fs").promises;
-function htmlToPdfBuffer(htmlContent) {
-  return new Promise((resolve, reject) => {
-    pdf.create(htmlContent).toBuffer((err, buffer) => {
-      if (err) return reject(err);
-      resolve(buffer);
-    });
-  });
-}
-async function pdfToImageBuffer(pdfBuffer) {
-  const pdfFilePath = "./temp.pdf";
-  const outputFilePath = "./temp.png";
+const nodeHtmlToImage = require("node-html-to-image");
 
-  // Save the PDF buffer to a temporary file
-  await fs.writeFile(pdfFilePath, pdfBuffer);
-
-  // Convert the PDF to PNG
-  await poppler.convert(pdfFilePath, {
-    format: "png",
-    out_dir: ".",
-    out_prefix: "temp",
-    page: 1,
-  });
-
-  // Read the generated image file and encode it to base64
-  const imageBuffer = await fs.readFile(outputFilePath);
-  const base64Image = imageBuffer.toString("base64");
-
-  // Cleanup temporary files
-  await fs.unlink(pdfFilePath);
-  await fs.unlink(outputFilePath);
-
-  return base64Image;
-}
 exports.updateProduct = async (req, res) => {
   try {
     // Get userId from the verified token
@@ -62,10 +28,11 @@ exports.updateProduct = async (req, res) => {
 
     // Convert content to an image and then to base64 (if content is updated)
     let base64Thumbnail;
-
     if (content) {
-      const pdfBuffer = await htmlToPdfBuffer(content);
-      base64Thumbnail = await pdfToImageBuffer(pdfBuffer);
+      const imageBuffer = await nodeHtmlToImage({
+        html: content,
+      });
+      base64Thumbnail = imageBuffer.toString("base64");
     }
 
     // Update the template fields

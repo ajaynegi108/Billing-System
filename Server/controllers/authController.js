@@ -185,11 +185,11 @@ exports.forget = async (req, res) => {
     // Email content with reset link
     var resetLink = "";
     if (type === "admin") {
-      // resetLink = `http://localhost:5173/confirm/admin/${resetToken}`;
-      const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
+      resetLink = `http://localhost:5173/confirm/admin/${resetToken}`;
+      // const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
     } else {
-      // resetLink = `http://localhost:5173/confirm/customer/${resetToken}`;
-      const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
+      resetLink = `http://localhost:5173/confirm/customer/${resetToken}`;
+      // const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
     }
     // const resetLink = `https://billing-system-three.vercel.app/confirm/${resetToken}`;
 

@@ -28,8 +28,8 @@ export default function SetPassword() {
     try {
       // Sending the reset password request
       const response = await axios.post(
-        // "http://localhost:5000/api/auth/reset",
-        "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
+        "http://localhost:5000/api/auth/reset",
+        // "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
         { newPassword: password, token: id, type }
       );
 

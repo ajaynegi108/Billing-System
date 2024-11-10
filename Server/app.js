@@ -14,7 +14,7 @@ con();
 app.use(express.json());
 app.use(cookieParser());
 const allowedOrigins = [
-  // "http://localhost:5173", // Frontend development URL
+  "http://localhost:5173", // Frontend development URL
   "https://invoice-backend-ocfk.onrender.com", // Production frontend URL
   "https://billing-system-three.vercel.app",
 ];
