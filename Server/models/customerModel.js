@@ -38,6 +38,11 @@ const customerSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    password: {
+      type: String,
+      default: "$2b$10$n8Y6DIsDWy99er4i1vDZ5OaPEnXmKEl5TXwEPpM4lJ9w1ehEROspW",
+    },
+    resetToken: { type: String, required: false },
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );

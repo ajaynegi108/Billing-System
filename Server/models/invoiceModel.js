@@ -72,6 +72,11 @@ const invoiceSchema = new mongoose.Schema(
       default: null,
       required: true,
     },
+    status: {
+      type: String,
+      default: "deactive",
+      required: true,
+    },
     invoiceDate: {
       type: Date,
       default: null,
@@ -97,7 +102,12 @@ const invoiceSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    thumbnail: {
+      type: String,
+      default: null, // Allow null values
+    },
   },
+
   { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 

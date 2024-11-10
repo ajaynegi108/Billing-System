@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./assets/css/PasswordReset.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
@@ -12,7 +12,8 @@ export default function SetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { id } = useParams();
+  const { id, type } = useParams();
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   const handlePasswordReset = async (e) => {
     e.preventDefault();
@@ -27,19 +28,22 @@ export default function SetPassword() {
     try {
       // Sending the reset password request
       const response = await axios.post(
+        // "http://localhost:5000/api/auth/reset",
         "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
-        { newPassword: password, token: id }
+        { newPassword: password, token: id, type }
       );
 
-      console.log(response); // Log the response to check its contents
+      console.log(response);
 
-      if (response.data.success === true) {
-        // Show success toast
-        toast.success("Password has been successfully reset!");
-      } else {
-        // If the success flag isn't set, show an error
-        toast.error("Something went wrong. Please try again.");
-      }
+      toast.success("Password has been successfully reset!");
+
+      setTimeout(() => {
+        if (type === "admin") {
+          navigate("/login/admin");
+        } else {
+          navigate("/login/customer");
+        }
+      }, 1000);
     } catch (error) {
       console.error(error);
       // Show error toast if something goes wrong
@@ -50,7 +54,6 @@ export default function SetPassword() {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-
   return (
     <div>
       <div className="login-container">
@@ -103,12 +106,16 @@ export default function SetPassword() {
         </form>
 
         <div className="links">
-          <NavLink to="/login" className="form-link">
+          <NavLink to={`/login/${type}`} className="form-link">
             Back to Login
           </NavLink>
-          <NavLink to="/register" className="form-link">
-            Register
-          </NavLink>
+          {type === "admin" && (
+            <>
+              <NavLink to="/register" className="form-link">
+                Register
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
 

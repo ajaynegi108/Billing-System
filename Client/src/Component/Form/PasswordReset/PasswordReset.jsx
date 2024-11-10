@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./assets/css/PasswordReset.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the Toast CSS
@@ -9,7 +9,7 @@ export default function PasswordReset() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
+  const { type } = useParams();
   const handlePasswordReset = async (e) => {
     e.preventDefault();
 
@@ -23,7 +23,7 @@ export default function PasswordReset() {
       const response = await axios.post(
         // "http://localhost:5000/api/auth/forget",
         "https://invoice-backend-ocfk.onrender.com/api/auth/forget",
-        { email }
+        { email, type }
       );
 
       if (response.data.message) {

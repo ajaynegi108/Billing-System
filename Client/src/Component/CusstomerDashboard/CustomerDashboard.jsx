@@ -1,12 +1,12 @@
 import React from "react";
 import CustomerSideBar from "../Navbar/CustomerBar/CustomerSideBar";
 import { Outlet } from "react-router-dom";
-import Topnavbar from "../Navbar/Topnavbar";
+import CustomerTopbar from "../Navbar/CustomerBar/CustomerTopBar";
 
 export default function CustomerDashboard() {
   return (
     <>
-      <Topnavbar />
+      <CustomerTopbar />
       <div className="flex h-screen overflow-scroll">
         <div>
           <CustomerSideBar />

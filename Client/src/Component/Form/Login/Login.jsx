@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, NavLink } from "react-router-dom"; // Import useNavigate for redirection
+import { useNavigate, NavLink, useParams } from "react-router-dom"; // Import useNavigate for redirection
 import axios from "axios"; // Import Axios for API requests
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import "./assets/css/login.css";
@@ -9,6 +9,8 @@ export default function Login() {
     email: "",
     password: "",
   });
+
+  const { type } = useParams();
   const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [serverError, setServerError] = useState(""); // For handling server-side errors
@@ -47,6 +49,7 @@ export default function Login() {
           {
             email: formData.email,
             password: formData.password,
+            type: type,
           }
         );
 
@@ -58,7 +61,11 @@ export default function Login() {
           // localStorage.setItem("user_id", response.data.user_id);
 
           // Redirect to the home page
-          navigate("/home/dashboard");
+          if (type === "admin") {
+            navigate("/home/dashboard");
+          } else {
+            navigate("/customer/dashboard");
+          }
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -135,7 +142,8 @@ export default function Login() {
           Create account
         </NavLink>
         <NavLink
-          to="/password-reset"
+          to={`/password-reset/${type === "admin" ? "admin" : "customer"}`}
+          // to="/password-reset"
           id="forgot-password-link"
           className="form-link"
         >

@@ -2,10 +2,12 @@ const Invoice = require("../models/invoiceModel");
 const nodemailer = require("nodemailer");
 const pdf = require("html-pdf");
 const stripe = require("stripe")(process.env.STRIPE_SKEY);
+const nodeHtmlToImage = require("node-html-to-image");
 const { ObjectId } = require("mongodb");
+
 exports.createInvoice = async (req, res) => {
   try {
-    // Get userId from the verified token
+    // Destructure the body to get invoice data
     const {
       dynamicFields,
       products,
@@ -43,16 +45,102 @@ exports.createInvoice = async (req, res) => {
       phone: phone,
       abn: abn,
       product: products, // Products array
-      subtotal: subtotal, // Total amount
-      // invoiceType: invoiceType, // Invoice type
+      subtotal: subtotal, // Subtotal amount
       invoiceStatus: invoiceStatus, // Invoice status
       invoiceDate: invoiceDate, // Invoice creation date
       dueDate: dueDate, // Due date
       dynamicFields: dynamicFields, // Dynamic fields (key-value pairs)
-      totalAmount: totalamount,
-      gst: gst,
-      tax: tax,
+      totalAmount: totalamount, // Total amount
+      gst: gst, // GST
+      tax: tax, // Tax
     });
+
+    // Generate HTML content
+    const htmlContent = `
+      <div style="width: 100%; padding: 8px; background: #fff; border-radius: 8px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 16px; background: #e0f7fa;">
+              <h1 style="font-size: 24px; color: #0277bd; margin: 0;">TechOm Systems Pty Ltd</h1>
+              <p style="font-size: 18px; color: #757575; margin: 0;">ABN: 41849985686</p>
+            </td>
+            <td style="padding: 16px; background: #e0f7fa; text-align: right;">
+              <h1 style="font-size: 24px; color: #0277bd; margin: 0;">INVOICE</h1>
+            </td>
+          </tr>
+        </table>
+        
+        <div style="text-align: right; margin-bottom: 16px; margin-right:10px">
+       
+          <p style="color: #757575;">Invoice Date: ${invoiceDate}</p>
+          <p style="color: #757575;">Due Date: ${dueDate}</p>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 16px; border: 1px solid #e0e0e0;">
+              <h2 style="font-size: 18px; font-weight: bold; margin: 0;">From:</h2>
+              <p style="margin: 0;">Ground Floor</p>
+              <p style="margin: 0;">470 St Kilda Road, Melbourne VIC 3004</p>
+              <p style="margin: 0;">Phone: 0452392167</p>
+              <p style="margin: 0;">Email: hariom@techsystems.com.au</p>
+            </td>
+            <td style="padding: 16px; border: 1px solid #e0e0e0;">
+              <h2 style="font-size: 18px; font-weight: bold; margin: 0;">To:</h2>
+              <p style="color: #757575; margin: 0;">${name}</p>
+              <p style="color: #757575; margin: 0;">${address1} ${address2}</p>
+              <p style="color: #757575; margin: 0;">${city}, ${country}</p>
+              <p style="color: #757575; margin: 0;">Phone: ${phone}, Email: ${email}</p>
+            </td>
+          </tr>
+        </table>
+
+        <table style="width: 100%; border: 1px solid #e0e0e0; margin-bottom: 24px; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color: #f5f5f5;">
+              <th style="border: 1px solid #e0e0e0; padding: 8px; text-align: left;">Service</th>
+              <th style="border: 1px solid #e0e0e0; padding: 8px; text-align: left;">Description</th>
+              <th style="border: 1px solid #e0e0e0; padding: 8px; text-align: left;">Quantity</th>
+              <th style="border: 1px solid #e0e0e0; padding: 8px; text-align: left;">Price</th>
+              <th style="border: 1px solid #e0e0e0; padding: 8px; text-align: left;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${products
+              .map(
+                (item) => `
+                  <tr>
+                    <td>${item.name}</td>
+                    <td>${item.description}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                  </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <div style="font-weight: bold; padding: 16px; background-color: #f9f9f9; text-align: right;">
+          <p>Subtotal: ${subtotal}</p>
+          <p>GST: ${gst}</p>
+          <p>Total: ${totalamount}</p>
+        </div>
+
+        <footer style="margin-top: 24px; text-align: center;">
+          <p>Thank you for your business!</p>
+        </footer>
+      </div>
+    `;
+
+    // Convert HTML content to Base64
+    const imageBuffer = await nodeHtmlToImage({
+      html: htmlContent,
+      encoding: "base64", // This will return the image as a base64 encoded string
+    });
+
+    // Add base64 to the invoice document
+    newInvoice.thumbnail = imageBuffer;
 
     // Save the invoice to the database
     const savedInvoice = await newInvoice.save();
@@ -429,7 +517,8 @@ exports.sendInvoice = async (req, res) => {
         to: invoiceData.email,
         subject: `Invoice Number TOS${invoiceIdString.slice(-4)}`,
         html: `<p>Please find the attached invoice.</p>
-<p><a href="https://billing-system-three.vercel.app/payment/${invoiceData._id}">Click Here to Pay</a></p>
+        <p><a href="http://localhost:5173/customer/invoice/${invoiceData._id}">Click Here to Pay</a></p>
+// <p><a href="https://billing-system-three.vercel.app/customer/invoice/${invoiceData._id}">Click Here to Pay</a></p>
 `,
         attachments: [
           {
@@ -449,12 +538,18 @@ exports.sendInvoice = async (req, res) => {
         }
 
         // Send success response
+
         res.status(200).json({
           message: "Invoice sent successfully",
           info: info.response,
         });
       });
     });
+    await Invoice.findOneAndUpdate(
+      { _id: currentId },
+      { status: "active" }, // Set status to "active"
+      { new: true } // Optionally return the updated document
+    );
   } catch (error) {
     // Handle error
     console.error("Error sending invoice email:", error);
@@ -477,6 +572,9 @@ exports.MakePayment = async (req, res) => {
       success_url: "https://billing-system-three.vercel.app/success",
       cancel_url: "https://billing-system-three.vercel.app/cancel",
     });
+
+    console.log(session);
+
     res.json({ id: session.id });
   } catch (error) {
     res.status(500).send({ error: error.message });

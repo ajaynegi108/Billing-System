@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdDarkMode } from "react-icons/md";
 import { CiLight } from "react-icons/ci";
-import logo from "./asset/images/TOS_LOGO-white-bg-black.png";
-export default function Topnavbar() {
+import logo from "../asset/images/TOS_LOGO-white-bg-black.png";
+export default function CustomerTopbar() {
   const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
 
@@ -11,7 +11,7 @@ export default function Topnavbar() {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userName"); // Clear user name on logout
-    navigate("/login/admin");
+    navigate("/login/customer");
   };
 
   // Toggle the dark mode

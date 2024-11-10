@@ -35,7 +35,7 @@ export default function CustomerSideBar() {
           <ul className="space-y-1 p-2">
             <li>
               <NavLink
-                to="homedashboard"
+                to="dashboard"
                 className="flex items-center hover:bg-gray-700 p-2 rounded"
               >
                 <AiTwotoneDashboard className="mr-2" /> Dashboard
@@ -43,7 +43,7 @@ export default function CustomerSideBar() {
             </li>
             <li>
               <NavLink
-                to=""
+                to="invoice"
                 className="flex items-center hover:bg-gray-700 p-2 rounded"
               >
                 <TbFileInvoice className="mr-2" /> Invoices

@@ -10,7 +10,7 @@ const Payment = () => {
   return (
     <>
       <div className="flex gap-4">
-        <nav className="bg-gray-800 text-white text-start h-screen w-56">
+        {/* <nav className="bg-gray-800 text-white text-start h-screen w-56">
           <h2 className="space-y-2 p-2 pl-4">Payment Option</h2>
           <hr />
           <ul className="space-y-1 p-2">
@@ -47,7 +47,7 @@ const Payment = () => {
               </NavLink>
             </li>
           </ul>
-        </nav>
+        </nav> */}
         <div>
           <PaymentForm />
         </div>

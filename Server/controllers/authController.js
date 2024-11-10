@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const Customer = require("../models/customerModel");
 //Signup
 
 exports.signup = async (req, res) => {
@@ -49,7 +50,7 @@ exports.signup = async (req, res) => {
 
 // Login function
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, type } = req.body;
 
   // Validate input
   if (!email || !password) {
@@ -59,7 +60,12 @@ exports.login = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    var user = "";
+    if (type === "customer") {
+      user = await Customer.findOne({ email });
+    } else {
+      user = await User.findOne({ email });
+    }
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
@@ -134,7 +140,7 @@ exports.logout = (req, res) => {
 };
 
 exports.forget = async (req, res) => {
-  const { email } = req.body;
+  const { email, type } = req.body;
 
   // Validate input
   if (!email) {
@@ -143,15 +149,25 @@ exports.forget = async (req, res) => {
 
   try {
     // Check if the user exists
-    const user = await User.findOne({ email });
+    var user = "";
+    if (type === "customer") {
+      user = await Customer.findOne({ email });
+    } else {
+      user = await User.findOne({ email });
+    }
+
     if (!user) {
       return res.status(401).json({ message: "Invalid email." });
     }
 
     // Generate a token with the user's ID
-    const resetToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Token expires in 1 hour
-    });
+    const resetToken = jwt.sign(
+      { userId: user._id, email: email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h", // Token expires in 1 hour
+      }
+    );
 
     // Save the reset token to the user's record
     user.resetToken = resetToken;
@@ -167,8 +183,15 @@ exports.forget = async (req, res) => {
     });
 
     // Email content with reset link
-    // const resetLink = `http://localhost:5173/confirm/${resetToken}`;
-    const resetLink = `https://billing-system-three.vercel.app/confirm/${resetToken}`;
+    var resetLink = "";
+    if (type === "admin") {
+      // resetLink = `http://localhost:5173/confirm/admin/${resetToken}`;
+      const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
+    } else {
+      // resetLink = `http://localhost:5173/confirm/customer/${resetToken}`;
+      const resetLink = `https://billing-system-three.vercel.app/confirm/admin/${resetToken}`;
+    }
+    // const resetLink = `https://billing-system-three.vercel.app/confirm/${resetToken}`;
 
     const mailOptions = {
       from: "hariom@techomsystems.com.au",
@@ -192,7 +215,7 @@ exports.forget = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
-  const { token, newPassword } = req.body;
+  const { token, newPassword, type } = req.body;
 
   // Validate input
   if (!token || !newPassword) {
@@ -205,9 +228,16 @@ exports.resetPassword = async (req, res) => {
     // Verify and decode the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.userId;
+    const email = decoded.email;
 
     // Find the user by ID
-    const user = await User.findById(userId);
+    var user = "";
+    if (type === "customer") {
+      user = await Customer.findOne({ email });
+    } else {
+      user = await User.findOne({ userId });
+    }
+
     if (!user || user.resetToken !== token) {
       return res.status(401).json({ message: "Invalid or expired token." });
     }

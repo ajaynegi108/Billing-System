@@ -26,6 +26,7 @@ import PasswordReset from "./Component/Form/PasswordReset/PasswordReset";
 
 import { Navigate } from "react-router-dom";
 import SetPassword from "./Component/Form/PasswordReset/SetPassword";
+import InvoicesData from "./Component/CusstomerDashboard/InvoicesData";
 
 // Create a simple private route component
 const PrivateRoute = ({ children }) => {
@@ -54,11 +55,11 @@ function App() {
           />
           <Route path="/signup" element={<Signup />} />
           {/* <Route path="/" element={<Home />} /> */}
-          <Route path="/password-reset" element={<PasswordReset />} />
-          <Route path="/confirm/:id" element={<SetPassword />} />
+          <Route path="/password-reset/:type" element={<PasswordReset />} />
+          <Route path="/confirm/:type/:id" element={<SetPassword />} />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/customerlogin" element={<CustomerLogin />} />
+          <Route path="/login/:type" element={<Login />} />
+          {/* <Route path="/customer/login" element={<CustomerLogin />} /> */}
 
           {/* Protected Routes (wrapped in PrivateRoute to ensure authentication) */}
           <Route
@@ -160,16 +161,7 @@ function App() {
           </Route>
 
           <Route
-            path="payment/:id"
-            element={
-              <PrivateRoute>
-                <Payment />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/customerdashboard"
+            path="customer"
             element={
               <PrivateRoute>
                 <CustomerDashboard />
@@ -177,7 +169,24 @@ function App() {
             }
           >
             <Route
-              path="homedashboard"
+              path="invoice/:id"
+              element={
+                <PrivateRoute>
+                  <Payment />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="invoice"
+              element={
+                <PrivateRoute>
+                  <InvoicesData />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="dashboard"
               element={
                 <PrivateRoute>
                   <HomeDashboard />
