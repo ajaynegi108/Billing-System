@@ -419,7 +419,7 @@ exports.sendInvoice = async (req, res) => {
             <p style="margin: 0;">Ground Floor</p>
             <p style="margin: 0;">470 St Kilda Road, Melbourne VIC 3004</p>
             <p style="margin: 0;">Phone: 0452392167</p>
-            <p style="margin: 0;">Email: hariom@techsystems.com.au</p>
+            <p style="margin: 0;">Email: hariom@techomsystems.com.au</p>
           </td>
           <td style="padding: 16px; border: 1px solid #e0e0e0;">
             <h2 style="font-size: 18px; font-weight: bold; margin: 0;">To:</h2>

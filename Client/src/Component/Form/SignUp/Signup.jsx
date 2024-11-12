@@ -52,8 +52,8 @@ const SignupForm = () => {
     try {
       console.log(formData);
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        // "https://invoice-backend-ocfk.onrender.com/api/auth/register",
+        // "http://localhost:5000/api/auth/register",
+        "https://invoice-backend-ocfk.onrender.com/api/auth/register",
         formData
       );
 
