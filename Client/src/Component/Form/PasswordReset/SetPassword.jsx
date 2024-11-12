@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import api from "../../utils/api";
 import { ToastContainer, toast } from "react-toastify"; // Import toastify
 import "react-toastify/dist/ReactToastify.css"; // Import the Toast CSS
 
@@ -27,9 +28,9 @@ export default function SetPassword() {
 
     try {
       // Sending the reset password request
-      const response = await axios.post(
+      const response = await api.post(
         // "http://localhost:5000/api/auth/reset",
-        "https://invoice-backend-ocfk.onrender.com/api/auth/reset",
+        "/auth/reset",
         { newPassword: password, token: id, type }
       );
 

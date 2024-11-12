@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../../utils/api";
 import { useNavigate, NavLink } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
@@ -51,9 +52,9 @@ const SignupForm = () => {
 
     try {
       console.log(formData);
-      const response = await axios.post(
+      const response = await api.post(
         // "http://localhost:5000/api/auth/register",
-        "https://invoice-backend-ocfk.onrender.com/api/auth/register",
+        "/auth/register",
         formData
       );
 

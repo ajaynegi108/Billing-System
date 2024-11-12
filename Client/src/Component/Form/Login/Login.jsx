@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, NavLink, useParams } from "react-router-dom"; // Import useNavigate for redirection
 import axios from "axios"; // Import Axios for API requests
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import api from "../../utils/api";
 import "./assets/css/login.css";
 
 export default function Login() {
@@ -43,9 +44,9 @@ export default function Login() {
     if (validateForm()) {
       try {
         // Send login data to the server
-        const response = await axios.post(
-          // "http://localhost:5000/api/auth/login",
-          "https://invoice-backend-ocfk.onrender.com/api/auth/login",
+        const response = await api.post(
+          // "/auth/login",
+          "/auth/login",
           {
             email: formData.email,
             password: formData.password,
