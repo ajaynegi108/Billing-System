@@ -134,13 +134,13 @@ exports.createInvoice = async (req, res) => {
     `;
 
     // Convert HTML content to Base64
-    const imageBuffer = await nodeHtmlToImage({
-      html: htmlContent,
-      encoding: "base64", // This will return the image as a base64 encoded string
-    });
+    // const imageBuffer = await nodeHtmlToImage({
+    //   html: htmlContent,
+    //   encoding: "base64", // This will return the image as a base64 encoded string
+    // });
 
     // Add base64 to the invoice document
-    newInvoice.thumbnail = imageBuffer;
+    newInvoice.thumbnail = "imageBuffer";
 
     // Save the invoice to the database
     const savedInvoice = await newInvoice.save();
