@@ -2,8 +2,8 @@ import axios from "axios";
 //
 // Create an Axios instance
 const api = axios.create({
-  // baseURL: "https://invoice-backend-ocfk.onrender.com/api",
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://invoice-backend-ocfk.onrender.com/api",
+  // baseURL: "http://localhost:5000/api",
 
   maxContentLength: Infinity, // Remove content length limit
   maxBodyLength: Infinity, // Remove body length limit
